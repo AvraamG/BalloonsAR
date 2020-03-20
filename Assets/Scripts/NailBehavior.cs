@@ -43,7 +43,7 @@ public class NailBehavior : MonoBehaviour
     void ControlMovementWithHand(HandInfo info)
     {
         //TODO Check if I need to wait for a couple of frames to make sure there is no noise affecting the detection
-        nailIllustration.SetActive(true);
+        nailIllustration.SetActive(info.gesture_info.mano_class == ManoClass.POINTER_GESTURE_FAMILY);
 
         if (info.gesture_info.mano_class == ManoClass.POINTER_GESTURE_FAMILY)
         {
