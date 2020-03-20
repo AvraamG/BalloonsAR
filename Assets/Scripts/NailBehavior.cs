@@ -11,15 +11,11 @@ public class NailBehavior : MonoBehaviour
 
 
 
-    float detectedDepth, depthAdjustment;
     GameObject nailIllustration;
 
     private void Start()
     {
-        // the Depth Adjustment value translates the 0-1 values from the SDK to 0-5 for Z distance
-        depthAdjustment = 5f;
 
-        //The nailIllustration is reffering to the 3D model of the nail. 
         nailIllustration = transform.GetChild(0).gameObject;
     }
 
@@ -61,4 +57,6 @@ public class NailBehavior : MonoBehaviour
         }
 
     }
+
+
 }
