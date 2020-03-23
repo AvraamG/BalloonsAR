@@ -27,6 +27,17 @@ public class NailBehavior : MonoBehaviour
             ControlMovementWithHand(ManomotionManager.Instance.Hand_infos[0].hand_info);
 
         }
+
+        LookAwayFromPlayer();
+    }
+
+    /// <summary>
+    /// Make the Nail Face away 
+    /// </summary>
+    private void LookAwayFromPlayer()
+    {
+        this.transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
+
     }
 
 
