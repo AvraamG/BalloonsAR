@@ -14,7 +14,10 @@ public class LevelManager : MonoBehaviour
 {
 
     public static Action OnLevelCleared;
-
+    public static Action<int> OnScoreUpdated;
+    public static Action<int> OnScoreUpdatedByAmmount;
+    [SerializeField]
+    GameObject floatingPointsPrefab;
 
 
     //TODO Introduce the concept of Levels.
@@ -74,7 +77,7 @@ public class LevelManager : MonoBehaviour
             PopulateLevels();
             SetCurrentLevel();
 
-            BalloonBehavior.OnBalloonPoped += BalloonPopedAtPosition;
+            BalloonBehavior.OnBalloonPoped += HandleBalloonPoped;
             ARSession.stateChanged += HandleStateChanged;
 
 
@@ -112,15 +115,94 @@ public class LevelManager : MonoBehaviour
 
 
 
-
+    public int score;
+    //TODO check if I have a new High Score
+    int highScore;
 
     //Logic of what happens when a balloon is poped.
-    public void BalloonPopedAtPosition(BalloonBehavior balloon)
+    public void HandleBalloonPoped(BalloonBehavior balloon)
+    {
+        int newPoints;
+
+
+
+        switch (balloon.myBaloonType)
+        {
+            case BalloonBehavior.BalloonType.Red:
+                newPoints = 10;
+
+                break;
+            case BalloonBehavior.BalloonType.Green:
+                newPoints = 20;
+
+                break;
+            case BalloonBehavior.BalloonType.Gold:
+                newPoints = 100;
+
+                break;
+            case BalloonBehavior.BalloonType.Silver:
+                newPoints = 50;
+
+                break;
+            case BalloonBehavior.BalloonType.Black:
+                newPoints = 1;
+
+                break;
+            default:
+                newPoints = 0;
+                break;
+        }
+        UpdateScore(newPoints);
+        SpawnPointIndicator(balloon.transform.position, newPoints);
+
+
+    }
+
+    /// <summary>
+    /// Spawns a 3D text on the place the balloon was poped. Notifying the user of the points awarded. 
+    /// </summary>
+    /// <param name="position">Balloon Position</param>
+    /// <param name="addedScore">Score ammount</param>
+    void SpawnPointIndicator(Vector3 position, int addedScore)
+    {
+        GameObject points = Instantiate(floatingPointsPrefab);
+        points.transform.position = position;
+
+
+        //TODO Improve that. 
+        points.transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
+
+        points.GetComponent<TextMesh>().text = addedScore.ToString();
+
+        //TODO Create a behavior on the object instead.
+        //Create an object pool
+        //Fade this instead
+
+        Destroy(points, 2f);
+    }
+
+    /// <summary>
+    /// Updates the Score.
+    /// </summary>
+    /// <param name="ammount"></param>
+    void UpdateScore(int ammount)
     {
 
+        score += ammount;
+        if (score > highScore)
+        {
+            highScore = score;
+            //TODO Add HighScore in PlayerPrefs
+        }
+        if (OnScoreUpdated != null)
+        {
+            OnScoreUpdated(score);
+        }
 
-        //TODO not sure If I need the Position
-
+        if (OnScoreUpdatedByAmmount != null)
+        {
+            OnScoreUpdatedByAmmount(ammount);
+        }
 
     }
 
