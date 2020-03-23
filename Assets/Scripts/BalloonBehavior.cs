@@ -21,17 +21,85 @@ public class BalloonBehavior : MonoBehaviour
     GameObject distanceIndicatorObject;
     TextMesh distanceTextMesh;
 
+    public MeshRenderer balloonPlasticMeshRenderer;
+
     float destructionTime;
+
+    private int pointsWorth = 0;
+
+    public enum BalloonType
+    {
+        Red,
+        Green,
+        Gold,
+        Silver,
+        Black
+    }
+
+    BalloonType myBaloonType;
 
     private void OnEnable()
     {
         ballonIllustration = this.transform.Find("Balloon").gameObject;
         distanceIndicatorObject = this.transform.Find("DistanceIndicator").gameObject;
         distanceTextMesh = this.transform.Find("DistanceIndicator").gameObject.transform.Find("DistanceText").GetComponent<TextMesh>();
+
+        balloonPlasticMeshRenderer = ballonIllustration.transform.Find("Baloon").transform.Find("Plastic").GetComponent<MeshRenderer>();
         popSound = this.GetComponent<AudioSource>();
         destructionTime = popSound.clip.length;
     }
 
+    [SerializeField]
+    Color customRed = new Color(1, 0, 0);
+    Color customGreen = new Color(1, 0, 0);
+    Color customGold = new Color(1, 0, 0);
+    Color customSilver = new Color(0.66f, 0.66f, 0);
+    Color customBlack = new Color(1, 0, 0);
+
+
+
+    /// <summary>
+    /// Initializes different balloon types with different rewards and visualizations.
+    /// </summary>
+    /// <param name="type">Type of Balloon</param>
+    public void InitializeBalloon(BalloonType type)
+    {
+
+
+        myBaloonType = type;
+
+        switch (myBaloonType)
+        {
+            case BalloonType.Red:
+                pointsWorth = 10;
+                balloonPlasticMeshRenderer.material.color = customRed;
+                break;
+            case BalloonType.Green:
+                pointsWorth = 20;
+                balloonPlasticMeshRenderer.material.color = customGreen;
+                break;
+            case BalloonType.Gold:
+                pointsWorth = 100;
+                balloonPlasticMeshRenderer.material.color = customGold;
+
+                break;
+            case BalloonType.Silver:
+
+                pointsWorth = 50;
+                balloonPlasticMeshRenderer.material.color = customSilver;
+
+                break;
+            case BalloonType.Black:
+                //TODO answer why I did this
+                pointsWorth = 1;
+
+                balloonPlasticMeshRenderer.material.color = customBlack;
+
+                break;
+            default:
+                break;
+        }
+    }
 
     private void Update()
     {
