@@ -6,6 +6,7 @@ using System;
 //TODO Create an Item Class that a balloon can interact with. 
 public class BalloonBehavior : MonoBehaviour
 {
+    //TODO I dont need this serialized. 
     [SerializeField]
     Color greenColor;
     [SerializeField]
@@ -21,10 +22,11 @@ public class BalloonBehavior : MonoBehaviour
     GameObject distanceIndicatorObject;
     TextMesh distanceTextMesh;
 
-    public MeshRenderer balloonPlasticMeshRenderer;
+    MeshRenderer balloonPlasticMeshRenderer;
 
     float destructionTime;
 
+    //TODO this belongs to the Award class instead
     private int pointsWorth = 0;
 
     public enum BalloonType
@@ -36,7 +38,7 @@ public class BalloonBehavior : MonoBehaviour
         Black
     }
 
-    BalloonType myBaloonType;
+    public BalloonType myBaloonType;
 
     private void OnEnable()
     {
@@ -47,14 +49,19 @@ public class BalloonBehavior : MonoBehaviour
         balloonPlasticMeshRenderer = ballonIllustration.transform.Find("Baloon").transform.Find("Plastic").GetComponent<MeshRenderer>();
         popSound = this.GetComponent<AudioSource>();
         destructionTime = popSound.clip.length;
+
+
+        //TODO Replace this with proper instantiation
+        int randomIndex = UnityEngine.Random.Range(0, 4);
+        InitializeBalloon((BalloonType)randomIndex);
+
     }
 
-    [SerializeField]
     Color customRed = new Color(1, 0, 0);
-    Color customGreen = new Color(1, 0, 0);
-    Color customGold = new Color(1, 0, 0);
+    Color customGreen = new Color(0.231f, 0.96f, 0.26f);
+    Color customGold = new Color(0.962f, 0.7f, 0.23f);
     Color customSilver = new Color(0.66f, 0.66f, 0);
-    Color customBlack = new Color(1, 0, 0);
+    Color customBlack = new Color(0, 0, 0);
 
 
 
@@ -64,6 +71,7 @@ public class BalloonBehavior : MonoBehaviour
     /// <param name="type">Type of Balloon</param>
     public void InitializeBalloon(BalloonType type)
     {
+
 
 
         myBaloonType = type;
