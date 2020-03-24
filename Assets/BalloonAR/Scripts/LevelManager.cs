@@ -170,7 +170,7 @@ public class LevelManager : MonoBehaviour
 
 
         //TODO Improve that. 
-        points.transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
+        // points.transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
 
         points.GetComponent<TextMesh>().text = addedScore.ToString();
 
