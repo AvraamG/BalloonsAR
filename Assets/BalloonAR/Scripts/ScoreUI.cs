@@ -14,7 +14,7 @@ public class ScoreUI : MonoBehaviour
             Debug.LogError("Missing TMPro text");
             return;
         }
-        LevelManager.OnScoreUpdated += HandleScoreUpdated;
+        Player.OnTotalMoneyUpdated += HandleScoreUpdated;
 
 
     }

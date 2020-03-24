@@ -4,9 +4,8 @@ using UnityEngine;
 using System;
 using System.Linq;
 //TODO Create an Item Class that a balloon can interact with. 
-public class BalloonBehavior : MonoBehaviour
+public class BalloonBehavior : Interactable
 {
-    public static Action<BalloonBehavior> OnBalloonPoped;
 
     AudioSource popSound;
 
@@ -50,14 +49,7 @@ public class BalloonBehavior : MonoBehaviour
 
 
     //TODO instead of the level Manager bring a base points worth on the item, so it can scale on multiple items.
-    private int pointsWorth = 0;
-    public int itemAward
-    {
-        get
-        {
-            return pointsWorth;
-        }
-    }
+
     Color customRed = new Color(1, 0, 0);
     Color customGreen = new Color(0.231f, 0.96f, 0.26f);
     Color customGold = new Color(0.962f, 0.7f, 0.23f);
@@ -103,7 +95,6 @@ public class BalloonBehavior : MonoBehaviour
     public void InitializeBalloon(BalloonType type)
     {
         myBaloonType = type;
-
         AssignPoints();
 
     }
@@ -192,14 +183,15 @@ public class BalloonBehavior : MonoBehaviour
 
 
 
-    //TODO Further Generalize this
-    public void Interact()
+
+    override public void InteractWithItem(InteractionItem interactionItem)
     {
-        if (OnBalloonPoped != null)
+        if (OnItemInteractedWith != null)
         {
-            OnBalloonPoped(this);
+            OnItemInteractedWith(this);
         }
 
+        //TODO Check which Item can actually pop the balloon :D 
         PopBalloon();
     }
 

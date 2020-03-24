@@ -6,9 +6,8 @@
 /// Since the value of the Manomotion SDK for the pointer position is serialized for values [0-1] we need to adjust it to fit the screen width and height but also adjust the values for Z in order to reach in the distance
 /// </summary>
 
-public class NailBehavior : MonoBehaviour
+public class NailBehavior : InteractionItem
 {
-
 
 
     GameObject nailIllustration;
@@ -21,14 +20,8 @@ public class NailBehavior : MonoBehaviour
 
     void Update()
     {
-        //TODO create an event instead -> Something in the lines -> OnManoMotionFrameUpdated
-        if (ManomotionManager.Instance)
-        {
-            ControlMovementWithHand(ManomotionManager.Instance.Hand_infos[0].hand_info);
+        UseItem();
 
-        }
-
-        LookAwayFromPlayer();
     }
 
     /// <summary>
@@ -40,7 +33,12 @@ public class NailBehavior : MonoBehaviour
 
     }
 
+    public override void InitializeItem()
+    {
+        this.purchasePrice = 0;
+        quantity = 1;
 
+    }
     /// <summary>
     ///The Movement of the nail in this example is going to follow the index finger of the user when pointing
     //In order to understand that the user is in fact pointing, we make use of the HandtrackerManager instance that we declared before. 
@@ -51,23 +49,25 @@ public class NailBehavior : MonoBehaviour
     //Following to that, we make use of the Pointer_position as offered by the SDK in order to create the Vector3 position where we want the nail to move.
     //Finally, in order to have a smoother transition, we Learp the distance over time in order to achieve a better result.
     /// </summary>
-    void ControlMovementWithHand(HandInfo info)
+    public override void UseItem()
     {
-        //TODO Check if I need to wait for a couple of frames to make sure there is no noise affecting the detection
-        nailIllustration.SetActive(info.gesture_info.mano_class == ManoClass.POINTER_GESTURE_FAMILY);
-
-        if (info.gesture_info.mano_class == ManoClass.POINTER_GESTURE_FAMILY)
+        if (ManomotionManager.Instance)
         {
+            HandInfo info = ManomotionManager.Instance.Hand_infos[0].hand_info;
+            //TODO Check if I need to wait for a couple of frames to make sure there is no noise affecting the detection
+            nailIllustration.SetActive(info.gesture_info.mano_class == ManoClass.POINTER_GESTURE_FAMILY);
 
-            float depthadjustment = 2f;
-            float adjustDepth = info.tracking_info.depth_estimation * depthadjustment;
+            if (info.gesture_info.mano_class == ManoClass.POINTER_GESTURE_FAMILY)
+            {
 
-            Vector3 pointerPosition = ManoUtils.Instance.CalculateNewPosition(info.tracking_info.bounding_box.top_left, adjustDepth);
-            this.transform.position = Vector3.Lerp(this.transform.position, pointerPosition, Time.deltaTime * 10);
+                float depthadjustment = 2f;
+                float adjustDepth = info.tracking_info.depth_estimation * depthadjustment;
 
+                Vector3 pointerPosition = ManoUtils.Instance.CalculateNewPosition(info.tracking_info.bounding_box.top_left, adjustDepth);
+                this.transform.position = Vector3.Lerp(this.transform.position, pointerPosition, Time.deltaTime * 10);
+
+            }
+            LookAwayFromPlayer();
         }
-
     }
-
-
 }

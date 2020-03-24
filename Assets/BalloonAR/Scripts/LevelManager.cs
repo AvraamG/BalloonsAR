@@ -14,8 +14,7 @@ public class LevelManager : MonoBehaviour
 {
 
     public static Action OnLevelCleared;
-    public static Action<int> OnScoreUpdated;
-    public static Action<int> OnScoreUpdatedByAmmount;
+
     [SerializeField]
     GameObject floatingPointsPrefab;
 
@@ -77,7 +76,7 @@ public class LevelManager : MonoBehaviour
             PopulateLevels();
             SetCurrentLevel();
 
-            BalloonBehavior.OnBalloonPoped += HandleBalloonPoped;
+            Interactable.OnItemInteractedWith += HandleItemInteractedWith;
             ARSession.stateChanged += HandleStateChanged;
 
 
@@ -115,45 +114,14 @@ public class LevelManager : MonoBehaviour
 
 
 
-    public int score;
-    //TODO check if I have a new High Score
-    int highScore;
+
 
     //Logic of what happens when a balloon is poped.
-    public void HandleBalloonPoped(BalloonBehavior balloon)
+    public void HandleItemInteractedWith(Interactable interactable)
     {
-        int newPoints;
 
 
-
-        switch (balloon.myBaloonType)
-        {
-            case BalloonBehavior.BalloonType.Red:
-                newPoints = 10;
-
-                break;
-            case BalloonBehavior.BalloonType.Green:
-                newPoints = 20;
-
-                break;
-            case BalloonBehavior.BalloonType.Gold:
-                newPoints = 100;
-
-                break;
-            case BalloonBehavior.BalloonType.Silver:
-                newPoints = 50;
-
-                break;
-            case BalloonBehavior.BalloonType.Black:
-                newPoints = 1;
-
-                break;
-            default:
-                newPoints = 0;
-                break;
-        }
-        UpdateScore(newPoints);
-        SpawnPointIndicator(balloon.transform.position, newPoints);
+        SpawnPointIndicator(interactable.transform.position, interactable.PointsWorth);
 
 
     }
@@ -181,30 +149,7 @@ public class LevelManager : MonoBehaviour
         Destroy(points, 2f);
     }
 
-    /// <summary>
-    /// Updates the Score.
-    /// </summary>
-    /// <param name="ammount"></param>
-    void UpdateScore(int ammount)
-    {
 
-        score += ammount;
-        if (score > highScore)
-        {
-            highScore = score;
-            //TODO Add HighScore in PlayerPrefs
-        }
-        if (OnScoreUpdated != null)
-        {
-            OnScoreUpdated(score);
-        }
-
-        if (OnScoreUpdatedByAmmount != null)
-        {
-            OnScoreUpdatedByAmmount(ammount);
-        }
-
-    }
 
     /// <summary>
     /// Responds to the ARsessions state changed by displaying the appropriate message and visuals.

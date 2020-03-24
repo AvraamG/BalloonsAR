@@ -10,7 +10,7 @@ public class NailFunctionality : MonoBehaviour
         if (other.tag == "Item")
         {
             //TODO This is going to be ->Item instead of ballon
-            other.gameObject.GetComponent<BalloonBehavior>().Interact();
+            other.gameObject.GetComponent<BalloonBehavior>().InteractWithItem();
             Debug.Log("touched an item");
         }
     }
